@@ -13,13 +13,14 @@
 <script type="text/javascript">
 class Block{
 	constructor(){
-		this.type =7;
+		this.type =2;
 		this.status = 0;
-		this.i = 2;
-		this.j = 5;
+		this.i = 1;
+		this.j = 4;
 	}
 }
 var b = new Block();
+var flagOver = false;
 
 var block2D= [
 	[0,0,0,0,0,	0,0,0,0,0],
@@ -80,9 +81,9 @@ var stack2D= [
 	
 	[0,0,0,0,0,	0,0,0,0,0],
 	[0,0,0,0,0,	0,0,0,0,0],
-	[0,0,0,0,0,	0,0,0,0,0],
-	[1,1,1,1,1,	1,0,0,0,0],
-	[1,1,1,1,1,	1,1,1,0,0]
+	[1,1,1,1,1,	1,1,1,1,0],
+	[1,1,1,1,1,	1,1,1,1,0],
+	[1,1,1,1,1,	1,1,1,1,0]
 ];
 
 
@@ -119,6 +120,7 @@ var displ2D= [
 ];
 
 function setBlock2D(){
+	//console.log(b);
 	
 	for(var i=0;i<25;i++){
 		for(var j=0;j<10;j++){
@@ -250,8 +252,12 @@ function setBlock2D(){
 			block2D[b.i-1]	[b.j]	= b.type;
 			block2D[b.i]	[b.j-1]	= b.type;
 			block2D[b.i+1]	[b.j]	= b.type;
+
 		}
 	}
+	
+	
+	//console.log(block2D);
 }
 
 function my_render(){
@@ -263,48 +269,50 @@ function my_render(){
 				tiles[i*10+j].bgColor = "white";
 			}
 			if(displ2D[i][j]==1){
-				tiles[i*10+j].bgColor = "gray";
+				tiles[i*10+j].bgColor = "FF1D00";
 			}
 			if(displ2D[i][j]==2){
-				tiles[i*10+j].bgColor = "green";
+				tiles[i*10+j].bgColor = "FF7200";
 			}
 			if(displ2D[i][j]==3){
-				tiles[i*10+j].bgColor = "cyan";
+				tiles[i*10+j].bgColor = "FFFF00";
 			}
 			if(displ2D[i][j]==4){
-				tiles[i*10+j].bgColor = "orange";
+				tiles[i*10+j].bgColor = "21FF00";
 			}
 			if(displ2D[i][j]==5){
-				tiles[i*10+j].bgColor = "rgb(204, 102, 204)";
+				tiles[i*10+j].bgColor = "0083FF";
 			}
 			if(displ2D[i][j]==6){
-				tiles[i*10+j].bgColor = "gold";
+				tiles[i*10+j].bgColor = "1D00FF";
 			}
 			if(displ2D[i][j]==7){
-				tiles[i*10+j].bgColor = "tomato";
+				tiles[i*10+j].bgColor = "D400FF";
 			}
 			
-			if(displ2D[i][j]==8){
-				tiles[i*10+j].bgColor = "rgb(051, 051, 051)";
-			}
-			if(displ2D[i][j]==9){
-				tiles[i*10+j].bgColor = "rgb(051, 051, 051)";
-			}
-			if(displ2D[i][j]==10){
-				tiles[i*10+j].bgColor = "rgb(051, 153, 153)";
-			}
+			
 			if(displ2D[i][j]==11){
-				tiles[i*10+j].bgColor = "rgb(200, 98, 000)";
+				tiles[i*10+j].bgColor = "FFC4C1";
 			}
 			if(displ2D[i][j]==12){
-				tiles[i*10+j].bgColor = "rgb(102, 000, 102)";
+				tiles[i*10+j].bgColor = "FCDFBF";
 			}
 			if(displ2D[i][j]==13){
-				tiles[i*10+j].bgColor = "rgb(153, 102, 000)";
+				tiles[i*10+j].bgColor = "CAFCBF";
 			}
 			if(displ2D[i][j]==14){
-				tiles[i*10+j].bgColor = "rgb(204, 000, 102)";
+				tiles[i*10+j].bgColor = "BFFCF4";
 			}
+			if(displ2D[i][j]==15){
+				tiles[i*10+j].bgColor = "BFDBFC";
+			}
+			if(displ2D[i][j]==16){
+				tiles[i*10+j].bgColor = "BFC5FC";
+			}
+			if(displ2D[i][j]==17){
+				tiles[i*10+j].bgColor = "EAC1FF";
+			}
+			
 		}
 	}
 	
@@ -332,11 +340,13 @@ function rotate(){
 }
 
 function setDispl2D(){
+	
 	for(var i=0;i<25;i++){
 		for(var j=0;j<10;j++){
-			displ2D[i][j]=0;				
+			displ2D[i][j]=0;		
 		}
 	}
+	
 	
 	for(var i=0;i<25;i++){
 		for(var j=0;j<10;j++){
@@ -352,15 +362,14 @@ function setDispl2D(){
 			}		
 		}
 	}
-
+	
 }
-
 function isBlockStack(){
-	for(var i=0; i<25; i++){
-		for(var j=0; j<10; j++){
-			if(stack2D[i][j] > 0 && block2D[i][j]){
+	for(var i=0;i<25;i++){
+		for(var j=0;j<10;j++){
+			if(stack2D[i][j]>0&&block2D[i][j]){
 				return true;
-			}
+			}		
 		}
 	}
 	return false;
@@ -368,74 +377,177 @@ function isBlockStack(){
 
 function isBlockSide(){
 	var cnt = 0;
-	for(var i=0; i<25; i++){
-		for(var j=0; j<10; j++){
-			if(block2D[i][j] > 0){
-				cnt ++;
-			}
+	for(var i=0;i<25;i++){
+		for(var j=0;j<10;j++){
+			if(block2D[i][j]>0){
+				cnt++;
+			}		
 		}
 	}
-	if(cnt ==4){
+	if(cnt==4){
 		return false;
 	}else{
 		return true;
 	}
+	
 }
 
 function moveBlock2DToStack2D(){
-	var cnt = 0;
-	for(var i=0; i<25; i++){
-		for(var j=0; j<10; j++){
-			if(block2D[i][j] > 0){
-				stack2D[i][j] = block2D[i][j];
-			}
+	for(var i=0;i<25;i++){
+		for(var j=0;j<10;j++){
+			if(block2D[i][j]>0){
+				stack2D[i][j]=block2D[i][j]+10;
+			}		
 		}
 	}
 }
 
-function myclick(e){
-	var back_status = b.status;
-	var back_i = b.i;
-	var back_j = b.j;
-	var flagDown = false;
+function getMax10(){
+	var cnt = 0;
+	for(var i=0;i<stack2D.length;i++){
+		var l = stack2D[i];
+		if(
+			l[0]>0 && l[1]>0 && l[2]>0 && l[3]>0 && l[4]>0 && 
+			l[5]>0 && l[6]>0 && l[7]>0 && l[8]>0 && l[9]>0
+		){
+			cnt++;
+		}
+		
+	}
+	return cnt;
 	
+}
+function cleanStack(cnt_max){
+	var s = [];
+	for(var i=0;i<cnt_max;i++){
+		s.push([0,0,0,0,0,	0,0,0,0,0]+"");		
+	}
+
+	for(var i=0;i<stack2D.length;i++){
+		var l = stack2D[i];
+		if(
+			!(	l[0]>0 && l[1]>0 && l[2]>0 && l[3]>0 && l[4]>0 && 
+				l[5]>0 && l[6]>0 && l[7]>0 && l[8]>0 && l[9]>0 )
+		){
+			s.push(l+"")
+		}
+	}
+	console.log("s",s);
+	for(var i=0;i<25;i++){
+		var arr_s = s[i].split(",");
+		stack2D[i][0] = arr_s[0];
+		stack2D[i][1] = arr_s[1];
+		stack2D[i][2] = arr_s[2];
+		stack2D[i][3] = arr_s[3];
+		stack2D[i][4] = arr_s[4];
+	
+		stack2D[i][5] = arr_s[5];
+		stack2D[i][6] = arr_s[6];
+		stack2D[i][7] = arr_s[7];
+		stack2D[i][8] = arr_s[8];
+		stack2D[i][9] = arr_s[9];
+		
+	}
+	console.log("stack2D",stack2D);
+}
+
+function myclick(e){
+	if(flagOver){
+		return;
+	}
+	var bak_status = b.status;
+	var bak_i = b.i;
+	var bak_j = b.j;
+	
+	var flagDown = false;
 	var code = e.code;
-	if(code=="ArrowUp"){b.i--;}
+	
 	if(code=="ArrowDown"){
-		b.i++; 
+		b.i++;
 		flagDown = true;
 	}
-	if(code=="ArrowLeft"){b.j--;}
-	if(code=="ArrowRight"){b.j++;}
-	if(code=="Space"){rotate();}
+	if(code=="ArrowLeft"){
+		b.j--;
+	}
+	if(code=="ArrowRight"){
+		b.j++;
+	}
+	if(code=="Space"){
+		rotate();
+	}
 	
 	var flagBlockErr = false;
-	try{
+	try {
 		setBlock2D();
-		setDispl2D();
-	}catch(error){ flagBlockErr = true; }
-	var flagBlockStack =isBlockStack();
-	var flagBlockSide = isBlockSide();
-	var flagCrush = flagBlockStack || flagBlockSide || flagBlockErr;
+	} catch (error) {
+		flagBlockErr = true;
+	}
+	setDispl2D();
 	
-	if(flagCrush == true){
-		b.status = back_status;
-		b.i = back_i;
-		b.j = back_j;
+	var flagBlockStack = isBlockStack();
+	var flagBlockSide = isBlockSide();
+	var flagCrush = flagBlockErr||flagBlockStack||flagBlockSide;
+	
+	if(flagCrush){
+		b.status = bak_status;
+		b.i = bak_i;
+		b.j = bak_j;
 		setBlock2D();
 		setDispl2D();
 	}
-	if(flagCrush && flagDown){
+	if(flagCrush&&flagDown){
+		//console.log("딱");
 		moveBlock2DToStack2D();
-		console.log(stack2D);
-		b.type =  parseInt(Math.random() * 7)+1;
+		//console.log(stack2D);
 		
-		b.i = 1;
-		b.j = 5;
+		var cnt_max = getMax10();
+		var obj_remain = document.querySelector("#my_remained");
+		var cnt_remain = parseInt(obj_remain.innerText);
+		cnt_remain += cnt_max;
+		obj_remain.innerText = cnt_remain;
+		if(cnt_remain>=10){
+			alert("mission completed");
+			flagOver = true;
+		}
+		
+		console.log("cnt_max",cnt_max);
+		cleanStack(cnt_max);
+		
+		b.type= parseInt(Math.random()*7)+1;
+		b.i =1;
+		b.j =4;
 		setBlock2D();
 		setDispl2D();
+		if(
+			stack2D[2][0]>0 ||
+			stack2D[2][1]>0 ||
+			stack2D[2][2]>0 ||
+			stack2D[2][3]>0 ||
+			stack2D[2][4]>0 ||
+			
+			stack2D[2][5]>0 ||
+			stack2D[2][6]>0 ||
+			stack2D[2][7]>0 ||
+			stack2D[2][8]>0 ||
+			stack2D[2][9]>0
+				){
+			alert("Game Over")
+			flagOver = true;
+		}
 	}
+	
 	my_render();
+}
+function fn_init(){
+	fn_tick();
+}
+
+var tick = 0;
+
+function fn_tick(){
+	myclick({"code": "ArrowDown"});
+	tick ++;
+	setTimeout(() => fn_tick(), 250);	
 }
 
 window.addEventListener("keydown", (e) => 
@@ -445,8 +557,8 @@ window.addEventListener("keydown", (e) =>
 </script>
 
 </head>
-<body>
-TETRIS <a href="javascript:setBlock2D()">call</a> <a href="javascript:my_render()">render</a>
+<body onload="fn_init()">
+TETRIS Score: <span id="my_remained">0</span>
 <table border="1">
 	<tr>
 		<td class="tile"></td><td class="tile"></td><td class="tile"></td><td class="tile"></td><td class="tile"></td>
@@ -553,9 +665,6 @@ TETRIS <a href="javascript:setBlock2D()">call</a> <a href="javascript:my_render(
 		<td class="tile"></td><td class="tile"></td><td class="tile"></td><td class="tile"></td><td class="tile"></td>
 	</tr>	
 
-	
-	
-	
 </table>
 
 </body>
